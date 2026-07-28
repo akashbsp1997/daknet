@@ -45,11 +45,36 @@ try {
   `);
   console.log(cols.rows);
 
-  console.log("\n--- Running the exact failing query ---");
+  console.log("\n--- users columns ---");
+  const userCols = await client.query(`
+    SELECT column_name, data_type, is_nullable
+    FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'users'
+    ORDER BY ordinal_position
+  `);
+  console.log(userCols.rows);
+
+  console.log("\n--- Running the exact failing query (user_offices) ---");
   try {
     const result = await client.query(
       `select "office_id" from "user_offices" where "user_offices"."user_id" = $1`,
       ["00000000-0000-0000-0000-000000000000"],
+    );
+    console.log("Query succeeded. Row count:", result.rowCount);
+  } catch (err) {
+    console.log("Query failed with the real Postgres error:");
+    console.log("  message:", err.message);
+    console.log("  code:", err.code);
+    console.log("  detail:", err.detail);
+    console.log("  hint:", err.hint);
+    console.log("  where:", err.where);
+  }
+
+  console.log("\n--- Running the exact failing query (users select by username) ---");
+  try {
+    const result = await client.query(
+      `select "id", "username", "password_hash", "full_name", "role", "phone", "employee_id", "is_active", "created_at", "updated_at" from "users" where "users"."username" = $1`,
+      ["__diagnose_probe__"],
     );
     console.log("Query succeeded. Row count:", result.rowCount);
   } catch (err) {
