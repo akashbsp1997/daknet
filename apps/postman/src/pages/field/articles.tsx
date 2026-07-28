@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useGetOperatorDashboard, scanArticle } from "@workspace/api-client-react";
 import { Package, ScanLine, Loader2, CheckCircle2, XCircle, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,17 +29,25 @@ export default function FieldArticles() {
   const [deliveryReason, setDeliveryReason] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleScanResult = async (barcode: string) => {
+  // BarcodeScanner's effect that mounts the camera depends on this callback's
+  // identity — if it changed on every render (e.g. from a background
+  // dashboard refetch), the camera would tear down and restart mid-scan.
+  // Keeping it permanently stable (empty deps) via a ref for the one bit of
+  // state it needs avoids that.
+  const dashboardRef = useRef(dashboard);
+  useEffect(() => { dashboardRef.current = dashboard; }, [dashboard]);
+
+  const handleScanResult = useCallback(async (barcode: string) => {
     setScanMode(false);
     try {
       const article = await scanArticle(barcode);
       setSelectedArticle(article);
     } catch {
       // Offline or lookup failed — fall back to the already-loaded list.
-      const found = dashboard?.articles.find((a: any) => a.barcode === barcode);
+      const found = dashboardRef.current?.articles.find((a: any) => a.barcode === barcode);
       if (found) setSelectedArticle(found);
     }
-  };
+  }, []);
 
   const getCurrentPosition = (): Promise<GeolocationPosition | null> =>
     new Promise((resolve) => {
