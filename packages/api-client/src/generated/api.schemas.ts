@@ -38,6 +38,24 @@ export const ArticleStatus = {
   returned: 'returned',
 } as const;
 
+export type MailType = typeof MailType[keyof typeof MailType];
+
+
+export const MailType = {
+  speed_post: 'speed_post',
+  registered_post: 'registered_post',
+  parcel: 'parcel',
+  gyan_post: 'gyan_post',
+  magazine_post: 'magazine_post',
+  blind_mail: 'blind_mail',
+  regd_newspaper: 'regd_newspaper',
+  ordinary_mail: 'ordinary_mail',
+  emo: 'emo',
+  epost: 'epost',
+  intimation: 'intimation',
+  other: 'other',
+} as const;
+
 export type VisitType = typeof VisitType[keyof typeof VisitType];
 
 
@@ -231,6 +249,19 @@ export interface Article {
   requiresPhoto: boolean;
   isCod: boolean;
   codAmount?: number | null;
+  mailType?: MailType | null;
+  careOf?: string | null;
+  houseNumber?: string | null;
+  subarea?: string | null;
+  area?: string | null;
+  postOffice?: string | null;
+  pincode?: string | null;
+  landmark?: string | null;
+  digipin?: string | null;
+  /** Whether a UIDAI/Aadhaar number was captured for this article. The raw number is never returned — only its hash is stored. */
+  hasUidaiOnFile: boolean;
+  /** Signed URL of the captured label photo, if this article was created via photo scan. */
+  scannedPhotoUrl?: string | null;
 }
 
 export interface CreateArticleRequest {
@@ -245,6 +276,17 @@ export interface CreateArticleRequest {
   requiresPhoto?: boolean;
   isCod?: boolean;
   codAmount?: number;
+  mailType?: MailType;
+  careOf?: string;
+  houseNumber?: string;
+  subarea?: string;
+  area?: string;
+  postOffice?: string;
+  pincode?: string;
+  landmark?: string;
+  digipin?: string;
+  /** Raw number, accepted here only — hashed server-side and never stored or echoed back in plaintext. */
+  uidaiNumber?: string;
 }
 
 export interface UpdateArticleRequest {
@@ -253,6 +295,17 @@ export interface UpdateArticleRequest {
   gpsLat?: number;
   gpsLng?: number;
   operatorId?: string;
+  mailType?: MailType;
+  careOf?: string;
+  houseNumber?: string;
+  subarea?: string;
+  area?: string;
+  postOffice?: string;
+  pincode?: string;
+  landmark?: string;
+  digipin?: string;
+  /** Raw number, accepted here only — hashed server-side and never stored or echoed back in plaintext. */
+  uidaiNumber?: string;
 }
 
 export interface Visit {
@@ -494,6 +547,10 @@ officeId?: string;
 operatorId?: string;
 status?: ArticleStatus;
 date?: string;
+};
+
+export type UploadArticlePhotoBody = {
+  photo: Blob;
 };
 
 export type ListVisitsParams = {

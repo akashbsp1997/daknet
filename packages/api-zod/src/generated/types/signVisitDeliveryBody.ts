@@ -5,7 +5,8 @@
  * Indian Postal Department Field Operations API
  * OpenAPI spec version: 0.1.0
  */
+import type { SignVisitDeliveryBodyMethod } from './signVisitDeliveryBodyMethod';
 
-export type ListBeatsParams = {
-officeId?: string;
+export type SignVisitDeliveryBody = {
+  method: SignVisitDeliveryBodyMethod;
 };

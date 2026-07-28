@@ -6,6 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type ListBeatsParams = {
-officeId?: string;
+export type UploadAddressPhotoBody = {
+  photo: Blob;
 };

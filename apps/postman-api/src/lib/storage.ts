@@ -32,7 +32,7 @@ const BUCKET = process.env.SUPABASE_S3_BUCKET_NAME!;
 export async function uploadPhoto(
   buffer: Buffer,
   mimeType: string,
-  folder: "visits" | "addresses",
+  folder: "visits" | "addresses" | "articles",
 ): Promise<string> {
   const ext = mimeType === "image/png" ? "png" : "jpg";
   const key = `${folder}/${randomUUID()}.${ext}`;

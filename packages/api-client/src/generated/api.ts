@@ -66,6 +66,7 @@ import type {
   UpdateUserRequest,
   UpdateVisitRequest,
   UploadAddressPhotoBody,
+  UploadArticlePhotoBody,
   UploadVisitPhotoBody,
   User,
   VerifyAddressBody,
@@ -1969,6 +1970,80 @@ export const useUpdateArticle = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getUpdateArticleMutationOptions(options));
+    }
+
+export const getUploadArticlePhotoUrl = (id: string,) => {
+
+
+
+
+  return `/api/articles/${id}/photo`
+}
+
+/**
+ * @summary Upload the label photo captured as proof for a photo-scanned article
+ */
+export const uploadArticlePhoto = async (id: string,
+    uploadArticlePhotoBody: UploadArticlePhotoBody, options?: RequestInit): Promise<Article> => {
+    const formData = new FormData();
+formData.append(`photo`, uploadArticlePhotoBody.photo);
+
+  return customFetch<Article>(getUploadArticlePhotoUrl(id),
+  {
+    ...options,
+    method: 'POST'
+    ,
+    body: formData
+  }
+);}
+
+
+
+
+
+export const getUploadArticlePhotoMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadArticlePhoto>>, TError,{id: string;data: BodyType<UploadArticlePhotoBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof uploadArticlePhoto>>, TError,{id: string;data: BodyType<UploadArticlePhotoBody>}, TContext> => {
+
+const mutationKey = ['uploadArticlePhoto'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadArticlePhoto>>, {id: string;data: BodyType<UploadArticlePhotoBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  uploadArticlePhoto(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadArticlePhotoMutationResult = NonNullable<Awaited<ReturnType<typeof uploadArticlePhoto>>>
+    export type UploadArticlePhotoMutationBody = BodyType<UploadArticlePhotoBody>
+    export type UploadArticlePhotoMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Upload the label photo captured as proof for a photo-scanned article
+ */
+export const useUploadArticlePhoto = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadArticlePhoto>>, TError,{id: string;data: BodyType<UploadArticlePhotoBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof uploadArticlePhoto>>,
+        TError,
+        {id: string;data: BodyType<UploadArticlePhotoBody>},
+        TContext
+      > => {
+      return useMutation(getUploadArticlePhotoMutationOptions(options));
     }
 
 export const getScanArticleUrl = (barcode: string,) => {

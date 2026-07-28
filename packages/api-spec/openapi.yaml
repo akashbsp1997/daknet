@@ -597,6 +597,38 @@ paths:
               schema:
                 $ref: "#/components/schemas/Article"
 
+  /articles/{id}/photo:
+    post:
+      operationId: uploadArticlePhoto
+      tags: [articles]
+      summary: Upload the label photo captured as proof for a photo-scanned article
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                  format: binary
+              required: [photo]
+      responses:
+        "200":
+          description: Photo attached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+
   /articles/scan/{barcode}:
     get:
       operationId: scanArticle
@@ -1215,6 +1247,10 @@ components:
       type: string
       enum: [pending, delivered, attempted, returned]
 
+    MailType:
+      type: string
+      enum: [speed_post, registered_post, parcel, gyan_post, magazine_post, blind_mail, regd_newspaper, ordinary_mail, emo, epost, intimation, other]
+
     VisitType:
       type: string
       enum: [delivery, enquiry, lead, complaint, pickup, business_proposal, beat_update, office_work, verification, money_collection, other]
@@ -1533,7 +1569,41 @@ components:
         codAmount:
           type: number
           nullable: true
-      required: [id, barcode, articleNumber, addressee, deliveryAddress, status, officeId, issuedAt, requiresSignature, requiresPhoto, isCod]
+        mailType:
+          $ref: "#/components/schemas/MailType"
+          nullable: true
+        careOf:
+          type: string
+          nullable: true
+        houseNumber:
+          type: string
+          nullable: true
+        subarea:
+          type: string
+          nullable: true
+        area:
+          type: string
+          nullable: true
+        postOffice:
+          type: string
+          nullable: true
+        pincode:
+          type: string
+          nullable: true
+        landmark:
+          type: string
+          nullable: true
+        digipin:
+          type: string
+          nullable: true
+        hasUidaiOnFile:
+          type: boolean
+          description: Whether a UIDAI/Aadhaar number was captured for this article. The raw number is never returned — only its hash is stored.
+        scannedPhotoUrl:
+          type: string
+          nullable: true
+          description: Signed URL of the captured label photo, if this article was created via photo scan.
+      required: [id, barcode, articleNumber, addressee, deliveryAddress, status, officeId, issuedAt, requiresSignature, requiresPhoto, isCod, hasUidaiOnFile]
 
     CreateArticleRequest:
       type: object
@@ -1560,6 +1630,27 @@ components:
           type: boolean
         codAmount:
           type: number
+        mailType:
+          $ref: "#/components/schemas/MailType"
+        careOf:
+          type: string
+        houseNumber:
+          type: string
+        subarea:
+          type: string
+        area:
+          type: string
+        postOffice:
+          type: string
+        pincode:
+          type: string
+        landmark:
+          type: string
+        digipin:
+          type: string
+        uidaiNumber:
+          type: string
+          description: Raw number, accepted here only — hashed server-side and never stored or echoed back in plaintext.
       required: [barcode, articleNumber, addressee, deliveryAddress, officeId]
 
     UpdateArticleRequest:
@@ -1575,6 +1666,27 @@ components:
           type: number
         operatorId:
           type: string
+        mailType:
+          $ref: "#/components/schemas/MailType"
+        careOf:
+          type: string
+        houseNumber:
+          type: string
+        subarea:
+          type: string
+        area:
+          type: string
+        postOffice:
+          type: string
+        pincode:
+          type: string
+        landmark:
+          type: string
+        digipin:
+          type: string
+        uidaiNumber:
+          type: string
+          description: Raw number, accepted here only — hashed server-side and never stored or echoed back in plaintext.
 
     # ── Visit ─────────────────────────────────────────────────────────
     Visit:
