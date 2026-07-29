@@ -29,7 +29,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             POSTBOOK
           </Link>
           <div className="flex items-center gap-3">
-            {user?.name && <span className="text-sm text-muted-foreground hidden sm:inline">{user.name}</span>}
+            {user?.fullName && <span className="text-sm text-muted-foreground hidden sm:inline">{user.fullName}</span>}
             <Button variant="ghost" size="icon" onClick={handleLogout} aria-label="Log out">
               <LogOut className="w-4 h-4" />
             </Button>

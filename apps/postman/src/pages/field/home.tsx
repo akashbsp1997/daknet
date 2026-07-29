@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useGetOperatorDashboard } from "@workspace/api-client-react";
+import { useGetOperatorDashboard, getGetOperatorDashboardQueryKey } from "@workspace/api-client-react";
 import { Package, MapPin, CheckCircle2, ChevronRight, ScanLine, Loader2, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ export default function FieldHome() {
   const operatorId = user?.id;
 
   const { data: dashboard, isLoading } = useGetOperatorDashboard({
-    query: { enabled: !!operatorId }
+    query: { queryKey: getGetOperatorDashboardQueryKey(), enabled: !!operatorId }
   });
 
   if (isLoading || !dashboard) {

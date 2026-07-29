@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useGetDailyReport, useListBeats, useGetOffice } from "@workspace/api-client-react";
+import { useGetDailyReport, useListBeats, useGetOffice, getGetDailyReportQueryKey, getListBeatsQueryKey, getGetOfficeQueryKey } from "@workspace/api-client-react";
 import { Loader2, Navigation } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ClickableMap, Polygon, Marker, Popup, convertGeoJsonToPoints, customIcon } from "@/components/MapComponents";
@@ -24,13 +24,14 @@ export default function FieldMap() {
     }
   }, []);
 
+  const dailyReportParams = { officeId, operatorId, date: new Date().toISOString().split('T')[0] };
   const { data: report, isLoading: isLoadingReport } = useGetDailyReport(
-    { officeId, operatorId, date: new Date().toISOString().split('T')[0] },
-    { query: { enabled: !!officeId && !!operatorId } }
+    dailyReportParams,
+    { query: { queryKey: getGetDailyReportQueryKey(dailyReportParams), enabled: !!officeId && !!operatorId } }
   );
 
-  const { data: beats } = useListBeats({ officeId }, { query: { enabled: !!officeId } });
-  const { data: office } = useGetOffice(officeId, { query: { enabled: !!officeId } });
+  const { data: beats } = useListBeats({ officeId }, { query: { queryKey: getListBeatsQueryKey({ officeId }), enabled: !!officeId } });
+  const { data: office } = useGetOffice(officeId, { query: { queryKey: getGetOfficeQueryKey(officeId), enabled: !!officeId } });
 
   const assignedBeat = beats?.find(b => b.id === user?.beatId);
   const beatPolygon = assignedBeat?.polygonGeoJson ? convertGeoJsonToPoints(assignedBeat.polygonGeoJson) : [];

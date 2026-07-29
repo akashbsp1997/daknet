@@ -17,7 +17,7 @@ export default function OfficeSettings() {
   const officeId = currentUser?.officeIds?.[0] || "";
   const queryClient = useQueryClient();
 
-  const { data: office, isLoading } = useGetOffice(officeId, { query: { enabled: !!officeId } });
+  const { data: office, isLoading } = useGetOffice(officeId, { query: { queryKey: getGetOfficeQueryKey(officeId), enabled: !!officeId } });
   const updateOffice = useUpdateOffice();
 
   const [formData, setFormData] = useState({

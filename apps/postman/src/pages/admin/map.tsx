@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useListOperatorLocations, useGetOffice, useListBeats } from "@workspace/api-client-react";
+import { useListOperatorLocations, useGetOffice, useListBeats, getGetOfficeQueryKey, getListOperatorLocationsQueryKey, getListBeatsQueryKey } from "@workspace/api-client-react";
 import { Loader2, Map as MapIcon, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ClickableMap, Polygon, Marker, Popup, convertGeoJsonToPoints, customIcon, operatorIcon } from "@/components/MapComponents";
@@ -8,9 +8,9 @@ import { getUser } from '@/lib/auth';
 export default function AdminMap() {
   const officeId = getUser()?.officeIds?.[0] || "";
 
-  const { data: office, isLoading: isLoadingOffice } = useGetOffice(officeId, { query: { enabled: !!officeId } });
-  const { data: locations, isLoading: isLoadingLocs } = useListOperatorLocations({ officeId }, { query: { refetchInterval: 30000, enabled: !!officeId } });
-  const { data: beats } = useListBeats({ officeId }, { query: { enabled: !!officeId } });
+  const { data: office, isLoading: isLoadingOffice } = useGetOffice(officeId, { query: { queryKey: getGetOfficeQueryKey(officeId), enabled: !!officeId } });
+  const { data: locations, isLoading: isLoadingLocs } = useListOperatorLocations({ officeId }, { query: { queryKey: getListOperatorLocationsQueryKey({ officeId }), refetchInterval: 30000, enabled: !!officeId } });
+  const { data: beats } = useListBeats({ officeId }, { query: { queryKey: getListBeatsQueryKey({ officeId }), enabled: !!officeId } });
 
   const officePolygon = office?.polygonGeoJson ? convertGeoJsonToPoints(office.polygonGeoJson) : [];
 

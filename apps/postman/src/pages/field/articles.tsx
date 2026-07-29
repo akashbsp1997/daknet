@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useGetOperatorDashboard, createArticle, uploadArticlePhoto, MailType, type CreateArticleRequest } from "@workspace/api-client-react";
+import { useGetOperatorDashboard, createArticle, uploadArticlePhoto, MailType, type CreateArticleRequest, getGetOperatorDashboardQueryKey } from "@workspace/api-client-react";
 import { Package, ScanLine, Loader2, CheckCircle2, XCircle, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useQueryClient } from "@tanstack/react-query";
-import { getGetOperatorDashboardQueryKey } from "@workspace/api-client-react";
 import { getUser } from '@/lib/auth';
 import { useToast } from "@/hooks/use-toast";
 import { enqueueArticleUpdate } from "@/lib/offline-queue";
@@ -42,7 +41,7 @@ export default function FieldArticles() {
   const officeId = getUser()?.officeIds?.[0] || "";
 
   const { data: dashboard, isLoading } = useGetOperatorDashboard({
-    query: { enabled: !!operatorId }
+    query: { queryKey: getGetOperatorDashboardQueryKey(), enabled: !!operatorId }
   });
 
   const [selectedArticle, setSelectedArticle] = useState<any>(null);

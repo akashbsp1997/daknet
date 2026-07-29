@@ -1,7 +1,7 @@
 import React from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGetOffice } from "@workspace/api-client-react";
+import { useGetOffice, getGetOfficeQueryKey } from "@workspace/api-client-react";
 import { getAddress, verifyAddress, verifyDigilocker, getPossibleDuplicates, type Address } from "@/lib/addresses-api";
 import { getRole, getUser } from "@/lib/auth";
 import { ClickableMap, Marker, Polygon, customIcon, convertGeoJsonToPoints } from "@/components/MapComponents";
@@ -28,7 +28,7 @@ export default function AddressDetail() {
     enabled: !!id,
   });
 
-  const officeQuery = useGetOffice(officeId ?? "", { query: { enabled: !!officeId } });
+  const officeQuery = useGetOffice(officeId ?? "", { query: { queryKey: getGetOfficeQueryKey(officeId ?? ""), enabled: !!officeId } });
 
   const duplicatesQuery = useQuery({
     queryKey: ["address-duplicates", id],

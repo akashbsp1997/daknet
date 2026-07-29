@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useListAddresses } from "@workspace/api-client-react";
+import { useListAddresses, getListAddressesQueryKey } from "@workspace/api-client-react";
 import { Search, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -28,9 +28,10 @@ export function AddressPicker({
     return () => clearTimeout(t);
   }, [query]);
 
+  const listParams = { officeId, q: debouncedQuery || undefined, limit: 10 };
   const { data, isFetching } = useListAddresses(
-    { officeId, q: debouncedQuery || undefined, limit: 10 },
-    { query: { enabled: open && !!officeId } }
+    listParams,
+    { query: { queryKey: getListAddressesQueryKey(listParams), enabled: open && !!officeId } }
   );
 
   return (
