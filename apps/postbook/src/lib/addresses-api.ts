@@ -8,7 +8,9 @@ import { getToken } from "./auth";
 // the same VITE_API_URL + bearer-token convention as the generated one.
 // Once codegen has run, these can be swapped for the generated hooks.
 
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
+// Trailing slash stripped so `${API_BASE}${path}` (path always starts with
+// "/") can't produce a double slash — Express 404s on GET/POST to "//api/...".
+const API_BASE = ((import.meta.env.VITE_API_URL as string | undefined) ?? "").replace(/\/+$/, "");
 
 async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
