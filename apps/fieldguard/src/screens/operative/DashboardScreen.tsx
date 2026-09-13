@@ -2,10 +2,11 @@ import { useCallback, useState } from "react";
 import { View, FlatList, Text, Button, StyleSheet, RefreshControl } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../navigation/AppNavigator";
-import { listDeliveries, flushSyncQueue } from "../utils/offlineSync";
+import type { OperativeStackParamList } from "../../navigation/OperativeNavigator";
+import { useAuth } from "../../auth/AuthContext";
+import { listDeliveries, flushSyncQueue } from "../../utils/offlineSync";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Dashboard">;
+type Props = NativeStackScreenProps<OperativeStackParamList, "Dashboard">;
 
 const STATUS_LABEL: Record<string, string> = {
   pending: "Pending",
@@ -13,15 +14,16 @@ const STATUS_LABEL: Record<string, string> = {
   disputed: "Flagged for review",
 };
 
-export function DeliveryDashboardScreen({ route, navigation }: Props) {
-  const { postmanId } = route.params;
+export function DashboardScreen({ navigation }: Props) {
+  const { user } = useAuth();
   const [deliveries, setDeliveries] = useState<Record<string, unknown>[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const load = useCallback(async () => {
-    const rows = await listDeliveries(postmanId);
+    if (!user) return;
+    const rows = await listDeliveries(user.id);
     setDeliveries(rows);
-  }, [postmanId]);
+  }, [user]);
 
   useFocusEffect(
     useCallback(() => {
@@ -39,8 +41,8 @@ export function DeliveryDashboardScreen({ route, navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.actions}>
-        <Button title="New Delivery" onPress={() => navigation.navigate("DeliveryForm", { postmanId })} />
-        <Button title="Optimize Route" onPress={() => navigation.navigate("RouteOptimization", { postmanId })} />
+        <Button title="New Delivery" onPress={() => navigation.navigate("DeliveryForm", {})} />
+        <Button title="Optimize Route" onPress={() => navigation.navigate("RouteOptimization")} />
       </View>
       <FlatList
         data={deliveries}

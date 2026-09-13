@@ -1,10 +1,10 @@
 import { View, Text, Button, StyleSheet } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../navigation/AppNavigator";
+import type { AdminStackParamList } from "../../navigation/AdminNavigator";
 
-type Props = NativeStackScreenProps<RootStackParamList, "AdminPanel">;
+type Props = NativeStackScreenProps<AdminStackParamList, "AdminHome">;
 
-export function AdminPanelScreen({ navigation }: Props) {
+export function AdminHomeScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Admin</Text>

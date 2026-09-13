@@ -2,17 +2,19 @@ import { useState } from "react";
 import { View, TextInput, Button, Text, ScrollView, StyleSheet, Alert } from "react-native";
 import * as Location from "expo-location";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../navigation/AppNavigator";
-import { PhotoCapture, type CapturedPhoto } from "../components/PhotoCapture";
-import { SignaturePad } from "../components/SignaturePad";
-import { saveDeliveryLocally } from "../utils/offlineSync";
+import type { OperativeStackParamList } from "../../navigation/OperativeNavigator";
+import { PhotoCapture, type CapturedPhoto } from "../../components/PhotoCapture";
+import { SignaturePad } from "../../components/SignaturePad";
+import { saveDeliveryLocally } from "../../utils/offlineSync";
+import { useAuth } from "../../auth/AuthContext";
 
-type Props = NativeStackScreenProps<RootStackParamList, "DeliveryForm">;
+type Props = NativeStackScreenProps<OperativeStackParamList, "DeliveryForm">;
 
 type Condition = "sealed" | "damaged" | "tampered";
 
 export function DeliveryFormScreen({ route, navigation }: Props) {
-  const { postmanId, barcodeId: initialBarcode } = route.params;
+  const { user } = useAuth();
+  const { barcodeId: initialBarcode } = route.params;
 
   const [barcodeId, setBarcodeId] = useState(initialBarcode ?? "");
   const [recipientPhone, setRecipientPhone] = useState("");
@@ -23,7 +25,7 @@ export function DeliveryFormScreen({ route, navigation }: Props) {
   const [saving, setSaving] = useState(false);
 
   async function handleSubmit() {
-    if (!barcodeId || !packagePhoto || !recipientPhoto || !signature) {
+    if (!user || !barcodeId || !packagePhoto || !recipientPhoto || !signature) {
       Alert.alert("Incomplete", "Barcode, both photos, and a signature are required.");
       return;
     }
@@ -36,7 +38,7 @@ export function DeliveryFormScreen({ route, navigation }: Props) {
       await saveDeliveryLocally({
         id: `${barcodeId}-${Date.now()}`,
         barcodeId,
-        postmanId,
+        postmanId: user.id,
         recipientPhone,
         photoPackageUri: packagePhoto.uri,
         photoRecipientUri: recipientPhoto.uri,
@@ -52,7 +54,7 @@ export function DeliveryFormScreen({ route, navigation }: Props) {
       });
 
       Alert.alert("Saved", "Delivery saved on-device. It will sync automatically.");
-      navigation.replace("Dashboard", { postmanId });
+      navigation.replace("Dashboard");
     } catch {
       Alert.alert("Error", "Could not save delivery. Please try again.");
     } finally {

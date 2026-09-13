@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { View, TextInput, Button, Text, StyleSheet } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../navigation/AppNavigator";
 import { requestOtp, verifyOtp } from "../api/authApi";
+import { useAuth } from "../auth/AuthContext";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Login">;
-
-export function LoginScreen({ navigation }: Props) {
+export function LoginScreen() {
+  const { setSession } = useAuth();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -26,7 +24,9 @@ export function LoginScreen({ navigation }: Props) {
     setError(null);
     try {
       const result = await verifyOtp(phone, otp);
-      navigation.replace("Dashboard", { postmanId: result.postmanId });
+      // The root navigator swaps to the right layout as soon as the session
+      // is set — role decides addressee/sender/operative/admin, not this screen.
+      await setSession(result.token, result.user);
     } catch {
       setError("Invalid OTP.");
     }

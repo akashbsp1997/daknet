@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, FlatList, Text, Button, StyleSheet, Alert } from "react-native";
-import { fetchFlaggedDeliveries, reviewFlaggedDelivery } from "../api/tamperApi";
+import { fetchFlaggedDeliveries, reviewFlaggedDelivery } from "../../api/tamperApi";
 
 interface FlaggedDelivery {
   id: string;

@@ -1,23 +1,21 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../navigation/AppNavigator";
-import { fetchTodaysRoute, type OptimizedRoute } from "../api/routeApi";
-import { RouteList } from "../components/RouteList";
-import { DeliveryMapView } from "../components/DeliveryMapView";
+import { fetchTodaysRoute, type OptimizedRoute } from "../../api/routeApi";
+import { RouteList } from "../../components/RouteList";
+import { DeliveryMapView } from "../../components/DeliveryMapView";
+import { useAuth } from "../../auth/AuthContext";
 
-type Props = NativeStackScreenProps<RootStackParamList, "RouteOptimization">;
-
-export function RouteOptimizationScreen({ route }: Props) {
-  const { postmanId } = route.params;
+export function RouteOptimizationScreen() {
+  const { user } = useAuth();
   const [optimizedRoute, setOptimizedRoute] = useState<OptimizedRoute | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchTodaysRoute(postmanId)
+    if (!user) return;
+    fetchTodaysRoute(user.id)
       .then(setOptimizedRoute)
       .catch(() => setError("Route optimization requires a connection. Try again once online."));
-  }, [postmanId]);
+  }, [user]);
 
   if (error) return <Text style={styles.message}>{error}</Text>;
   if (!optimizedRoute) return <Text style={styles.message}>Optimizing route...</Text>;
