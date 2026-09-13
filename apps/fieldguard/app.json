@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "FieldGuard",
+    "slug": "fieldguard",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "FieldGuard uses the camera to photograph packages and recipients as proof of delivery.",
+        "NSLocationWhenInUseUsageDescription": "FieldGuard records the delivery location to verify the drop-off and detect tampering."
+      }
+    },
+    "android": {
+      "package": "com.daknet.fieldguard",
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+    }
+  }
+}

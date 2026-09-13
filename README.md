@@ -6,6 +6,8 @@
 apps/
   postman/        Field operator PWA (React 19 + Vite + Tailwind v4 + Leaflet)
   postman-api/     Express 5 API (Node/pg, deployed on Render)
+  postbook/        Address-intelligence app (React 19 + Vite)
+  fieldguard/      Delivery fraud/tamper-detection app (React Native + Expo) — see apps/fieldguard/README.md
 packages/
   database/        Drizzle schema + DB client — @workspace/db
   api-spec/        openapi.yaml, source of truth for the API contract
